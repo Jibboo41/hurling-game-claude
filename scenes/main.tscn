@@ -1,0 +1,32 @@
+[gd_scene load_steps=7 format=3 uid="uid://main01"]
+
+[ext_resource type="PackedScene" uid="uid://field01" path="res://scenes/field.tscn" id="1_field"]
+[ext_resource type="PackedScene" uid="uid://player01" path="res://scenes/player.tscn" id="2_player"]
+[ext_resource type="PackedScene" uid="uid://sliotar01" path="res://scenes/sliotar.tscn" id="3_sliotar"]
+
+[sub_resource type="Sky" id="Sky_main"]
+
+[sub_resource type="Environment" id="Environment_main"]
+background_mode = 2
+sky = SubResource("Sky_main")
+ambient_light_source = 2
+ambient_light_energy = 0.3
+tonemap_mode = 2
+
+[node name="Main" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_main")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+rotation_degrees = Vector3(-50.0, 45.0, 0.0)
+light_energy = 1.5
+shadow_enabled = false
+
+[node name="Field" type="Node3D" parent="." instance=ExtResource("1_field")]
+
+[node name="Player" type="CharacterBody3D" parent="." instance=ExtResource("2_player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+
+[node name="Sliotar" type="RigidBody3D" parent="." instance=ExtResource("3_sliotar")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, -3.0)

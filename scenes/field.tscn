@@ -1,0 +1,130 @@
+[gd_scene load_steps=5 format=3 uid="uid://field01"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_grass"]
+size = Vector2(82.0, 137.0)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_green"]
+albedo_color = Color(0.133, 0.545, 0.133, 1.0)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_white"]
+albedo_color = Color(1.0, 1.0, 1.0, 1.0)
+
+[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_ground"]
+
+[node name="Field" type="Node3D"]
+
+[node name="GrassPlane" type="MeshInstance3D" parent="."]
+mesh = SubResource("PlaneMesh_grass")
+surface_material_override/0 = SubResource("StandardMaterial3D_green")
+
+[node name="StaticBody" type="StaticBody3D" parent="."]
+
+[node name="GroundCollision" type="CollisionShape3D" parent="StaticBody"]
+shape = SubResource("WorldBoundaryShape3D_ground")
+
+[node name="BoundaryNorth" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.01, -68.5)
+size = Vector3(82.0, 0.02, 0.2)
+material = SubResource("StandardMaterial3D_white")
+
+[node name="BoundarySouth" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.01, 68.5)
+size = Vector3(82.0, 0.02, 0.2)
+material = SubResource("StandardMaterial3D_white")
+
+[node name="BoundaryWest" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -41.0, 0.01, 0)
+size = Vector3(0.2, 0.02, 137.0)
+material = SubResource("StandardMaterial3D_white")
+
+[node name="BoundaryEast" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 41.0, 0.01, 0)
+size = Vector3(0.2, 0.02, 137.0)
+material = SubResource("StandardMaterial3D_white")
+
+[node name="CentreLine" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.01, 0)
+size = Vector3(82.0, 0.02, 0.2)
+material = SubResource("StandardMaterial3D_white")
+
+[node name="Line13North" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.01, -55.5)
+size = Vector3(82.0, 0.02, 0.2)
+material = SubResource("StandardMaterial3D_white")
+
+[node name="Line13South" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.01, 55.5)
+size = Vector3(82.0, 0.02, 0.2)
+material = SubResource("StandardMaterial3D_white")
+
+[node name="Line20North" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.01, -48.5)
+size = Vector3(82.0, 0.02, 0.2)
+material = SubResource("StandardMaterial3D_white")
+
+[node name="Line20South" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.01, 48.5)
+size = Vector3(82.0, 0.02, 0.2)
+material = SubResource("StandardMaterial3D_white")
+
+[node name="Line45North" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.01, -23.5)
+size = Vector3(82.0, 0.02, 0.2)
+material = SubResource("StandardMaterial3D_white")
+
+[node name="Line45South" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.01, 23.5)
+size = Vector3(82.0, 0.02, 0.2)
+material = SubResource("StandardMaterial3D_white")
+
+[node name="Line65North" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.01, -3.5)
+size = Vector3(82.0, 0.02, 0.2)
+material = SubResource("StandardMaterial3D_white")
+
+[node name="Line65South" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.01, 3.5)
+size = Vector3(82.0, 0.02, 0.2)
+material = SubResource("StandardMaterial3D_white")
+
+[node name="GoalNorth" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -68.5)
+
+[node name="UprightLeft" type="CSGCylinder3D" parent="GoalNorth"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.25, 3.5, 0)
+radius = 0.05
+height = 7.0
+material = SubResource("StandardMaterial3D_white")
+
+[node name="UprightRight" type="CSGCylinder3D" parent="GoalNorth"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.25, 3.5, 0)
+radius = 0.05
+height = 7.0
+material = SubResource("StandardMaterial3D_white")
+
+[node name="Crossbar" type="CSGCylinder3D" parent="GoalNorth"]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 0, 2.5, 0)
+radius = 0.05
+height = 6.5
+material = SubResource("StandardMaterial3D_white")
+
+[node name="GoalSouth" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 68.5)
+
+[node name="UprightLeft" type="CSGCylinder3D" parent="GoalSouth"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.25, 3.5, 0)
+radius = 0.05
+height = 7.0
+material = SubResource("StandardMaterial3D_white")
+
+[node name="UprightRight" type="CSGCylinder3D" parent="GoalSouth"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.25, 3.5, 0)
+radius = 0.05
+height = 7.0
+material = SubResource("StandardMaterial3D_white")
+
+[node name="Crossbar" type="CSGCylinder3D" parent="GoalSouth"]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 0, 2.5, 0)
+radius = 0.05
+height = 6.5
+material = SubResource("StandardMaterial3D_white")
