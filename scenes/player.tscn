@@ -1,41 +1,185 @@
-[gd_scene load_steps=10 format=3 uid="uid://player01"]
+[gd_scene load_steps=20 format=3 uid="uid://player01"]
 
 [ext_resource type="Script" uid="uid://scrplayer" path="res://scripts/player.gd" id="1_player"]
 [ext_resource type="Script" uid="uid://scrcam" path="res://scripts/camera_rig.gd" id="2_cam"]
 
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_body"]
+; --- Collision ---
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_collision"]
 radius = 0.4
 height = 1.8
 
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_body"]
-radius = 0.4
-height = 1.8
+; --- Body meshes ---
+[sub_resource type="SphereMesh" id="SphereMesh_head"]
+radius = 0.115
+height = 0.23
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_player"]
-albedo_color = Color(0.2, 0.4, 0.8, 1.0)
+[sub_resource type="CylinderMesh" id="CylinderMesh_neck"]
+top_radius = 0.04
+bottom_radius = 0.045
+height = 0.1
 
-[sub_resource type="CylinderMesh" id="CylinderMesh_handle"]
+[sub_resource type="BoxMesh" id="BoxMesh_torso"]
+size = Vector3(0.42, 0.42, 0.22)
+
+[sub_resource type="BoxMesh" id="BoxMesh_pelvis"]
+size = Vector3(0.38, 0.2, 0.2)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_upper_arm"]
+top_radius = 0.05
+bottom_radius = 0.055
+height = 0.3
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_forearm"]
+top_radius = 0.04
+bottom_radius = 0.045
+height = 0.27
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_upper_leg"]
+top_radius = 0.08
+bottom_radius = 0.085
+height = 0.38
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_lower_leg"]
+top_radius = 0.065
+bottom_radius = 0.07
+height = 0.38
+
+[sub_resource type="BoxMesh" id="BoxMesh_boot"]
+size = Vector3(0.12, 0.08, 0.24)
+
+; --- Hurley meshes ---
+[sub_resource type="CylinderMesh" id="CylinderMesh_hurley_handle"]
 top_radius = 0.025
 bottom_radius = 0.04
 height = 1.1
 
-[sub_resource type="BoxMesh" id="BoxMesh_bas"]
+[sub_resource type="BoxMesh" id="BoxMesh_hurley_bas"]
 size = Vector3(0.25, 0.04, 0.08)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hurley"]
+; --- Materials ---
+[sub_resource type="StandardMaterial3D" id="mat_skin"]
+albedo_color = Color(0.87, 0.72, 0.56, 1.0)
+
+[sub_resource type="StandardMaterial3D" id="mat_jersey"]
+albedo_color = Color(0.05, 0.15, 0.55, 1.0)
+
+[sub_resource type="StandardMaterial3D" id="mat_white"]
+albedo_color = Color(0.9, 0.9, 0.9, 1.0)
+
+[sub_resource type="StandardMaterial3D" id="mat_boots"]
+albedo_color = Color(0.1, 0.08, 0.06, 1.0)
+
+[sub_resource type="StandardMaterial3D" id="mat_hurley"]
 albedo_color = Color(0.76, 0.6, 0.42, 1.0)
+
+; ================================================================
+; SCENE TREE
+; ================================================================
 
 [node name="Player" type="CharacterBody3D"]
 script = ExtResource("1_player")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
-shape = SubResource("CapsuleShape3D_body")
+shape = SubResource("CapsuleShape3D_collision")
 
-[node name="Body" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
-mesh = SubResource("CapsuleMesh_body")
-surface_material_override/0 = SubResource("StandardMaterial3D_player")
+; ---- Humanoid body (all children of Model for easy toggling) ----
+
+[node name="Model" type="Node3D" parent="."]
+
+[node name="Head" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.65, 0)
+mesh = SubResource("SphereMesh_head")
+surface_material_override/0 = SubResource("mat_skin")
+
+[node name="Neck" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.49, 0)
+mesh = SubResource("CylinderMesh_neck")
+surface_material_override/0 = SubResource("mat_skin")
+
+[node name="Torso" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.175, 0)
+mesh = SubResource("BoxMesh_torso")
+surface_material_override/0 = SubResource("mat_jersey")
+
+[node name="Pelvis" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.87, 0)
+mesh = SubResource("BoxMesh_pelvis")
+surface_material_override/0 = SubResource("mat_white")
+
+; Right arm — angled forward ~36° (cos36=0.809, sin36=0.588)
+; Shoulder at (0.23, 1.38, 0), elbow at (0.23, 1.11, -0.2)
+[node name="UpperArmR" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(1, 0, 0, 0, 0.809, 0.588, 0, -0.588, 0.809, 0.23, 1.22, -0.08)
+mesh = SubResource("CylinderMesh_upper_arm")
+surface_material_override/0 = SubResource("mat_jersey")
+
+; Forearm angled forward ~32° (cos32=0.848, sin32=0.530)
+[node name="ForearmR" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(1, 0, 0, 0, 0.848, 0.530, 0, -0.530, 0.848, 0.19, 0.97, -0.24)
+mesh = SubResource("CylinderMesh_forearm")
+surface_material_override/0 = SubResource("mat_skin")
+
+; Left arm — angled forward ~32°, reaches across to grip hurley upper
+[node name="UpperArmL" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(1, 0, 0, 0, 0.848, 0.530, 0, -0.530, 0.848, -0.21, 1.26, -0.07)
+mesh = SubResource("CylinderMesh_upper_arm")
+surface_material_override/0 = SubResource("mat_jersey")
+
+; Forearm angled forward ~38° (cos38=0.788, sin38=0.616)
+[node name="ForearmL" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(1, 0, 0, 0, 0.788, 0.616, 0, -0.616, 0.788, -0.1, 1.12, -0.26)
+mesh = SubResource("CylinderMesh_forearm")
+surface_material_override/0 = SubResource("mat_skin")
+
+; Legs — vertical, hip-width apart
+[node name="UpperLegR" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.1, 0.635, 0)
+mesh = SubResource("CylinderMesh_upper_leg")
+surface_material_override/0 = SubResource("mat_white")
+
+[node name="LowerLegR" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.1, 0.26, 0)
+mesh = SubResource("CylinderMesh_lower_leg")
+surface_material_override/0 = SubResource("mat_white")
+
+[node name="UpperLegL" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.1, 0.635, 0)
+mesh = SubResource("CylinderMesh_upper_leg")
+surface_material_override/0 = SubResource("mat_white")
+
+[node name="LowerLegL" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.1, 0.26, 0)
+mesh = SubResource("CylinderMesh_lower_leg")
+surface_material_override/0 = SubResource("mat_white")
+
+; Boots — offset slightly forward so toes point ahead
+[node name="BootR" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.1, 0.04, 0.04)
+mesh = SubResource("BoxMesh_boot")
+surface_material_override/0 = SubResource("mat_boots")
+
+[node name="BootL" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.1, 0.04, 0.04)
+mesh = SubResource("BoxMesh_boot")
+surface_material_override/0 = SubResource("mat_boots")
+
+; ---- Hurley — carried in front, slightly right, bas near ground ----
+; HurleyPivot is the animation origin for the strike tween (rotation.x 0→1.4rad)
+
+[node name="HurleyPivot" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.08, 0.82, -0.22)
+
+[node name="Handle" type="MeshInstance3D" parent="HurleyPivot"]
+mesh = SubResource("CylinderMesh_hurley_handle")
+surface_material_override/0 = SubResource("mat_hurley")
+
+[node name="Bas" type="MeshInstance3D" parent="HurleyPivot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.55, 0.04)
+mesh = SubResource("BoxMesh_hurley_bas")
+surface_material_override/0 = SubResource("mat_hurley")
+
+; ---- Third-person camera rig ----
 
 [node name="CameraRig" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 0)
@@ -48,16 +192,3 @@ collision_mask = 1
 
 [node name="Camera" type="Camera3D" parent="CameraRig/SpringArm"]
 fov = 75.0
-
-[node name="HurleyPivot" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.45, 1.1, 0.2)
-
-[node name="Handle" type="MeshInstance3D" parent="HurleyPivot"]
-transform = Transform3D(0.996195, 0.0871557, 0, -0.0871557, 0.996195, 0, 0, 0, 1, 0, 0, 0)
-mesh = SubResource("CylinderMesh_handle")
-surface_material_override/0 = SubResource("StandardMaterial3D_hurley")
-
-[node name="Bas" type="MeshInstance3D" parent="HurleyPivot"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.55, 0.04)
-mesh = SubResource("BoxMesh_bas")
-surface_material_override/0 = SubResource("StandardMaterial3D_hurley")
